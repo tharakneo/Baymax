@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BayMax AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --red: #D92332;
+      --white: #FFFFFF;
+      --gray-200: #E8E8ED;
+      --gray-400: #86868B;
+      --gray-600: #6E6E73;
+      --gray-800: #1D1D1F;
+    }
+
+    body {
+      font-family: 'Outfit', -apple-system, sans-serif;
+      background: #fff;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* VIDEO LAYER */
+    #video-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #video-layer.fade-out {
+      transition: opacity 0.5s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #intro-video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #fff;
+    }
+
+    /* APPLE-STYLE MUTE BUTTON */
+    #mute-btn {
+      position: absolute;
+      bottom: 28px;
+      right: 28px;
+      z-index: 110;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(210, 210, 215, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.10);
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    #mute-btn:hover {
+      transform: scale(1.08);
+      background: #fff;
+    }
+
+    #mute-btn svg {
+      width: 15px;
+      height: 15px;
+      fill: #1D1D1F;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    /* MAIN CONTENT */
+    #main-content {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #main-content.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .hero-card {
+      width: 420px;
+      background: var(--red);
+      border-radius: 24px;
+      padding: 48px 40px 40px;
+      transform: scale(0.85) translateY(30px);
+      opacity: 0;
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .hero-card.animate-in {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+
+    .card-header {
+      margin-bottom: 36px;
+    }
+
+    .card-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.45);
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-size: 38px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -1.2px;
+      line-height: 1.08;
+    }
+
+    .card-subtitle {
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+
+    .module-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .module-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.07);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    .module-row.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .module-row:hover {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .module-row-left {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .module-row-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: -0.2px;
+    }
+
+    .module-row-desc {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 2px;
+    }
+
+    .module-row-arrow {
+      font-size: 20px;
+      color: rgba(255, 255, 255, 0.25);
+      transition: all 0.25s ease;
+    }
+
+    .module-row:hover .module-row-arrow {
+      color: rgba(255, 255, 255, 0.6);
+      transform: translateX(3px);
+    }
+
+    .card-footer {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: center;
+    }
+
+    .card-footer-text {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.25);
+      font-weight: 500;
+    }
+
+    /* MODULE PAGE */
+    .module-page {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      background: #fff;
+      transform: translateY(100%);
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .module-page.open {
+      transform: translateY(0);
+    }
+
+    .mp-header {
+      padding: 18px 32px;
+      border-bottom: 0.5px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .mp-back {
+      background: none;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--red);
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .mp-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--gray-800);
+    }
+
+    .mp-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .mp-soon {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 8px;
+    }
+
+    .mp-desc {
+      font-size: 14px;
+      color: var(--gray-400);
+      max-width: 300px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- VIDEO — autoplays immediately with muted (browser requirement for instant autoplay) -->
+  <div id="video-layer">
+    <video id="intro-video" playsinline preload="auto" autoplay muted>
+      <source src="intro.mp4" type="video/mp4">
+    </video>
+
+    <!-- Apple-style speaker button: click to unmute -->
+    <button id="mute-btn" title="Toggle sound">
+      <!-- Muted icon (shown first since video starts muted) -->
+      <svg id="icon-muted" viewBox="0 0 24 24">
+        <path
+          d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 001.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06z" />
+        <path fill-rule="evenodd"
+          d="M22.28 9.22a.75.75 0 010 1.06L20.56 12l1.72 1.72a.75.75 0 11-1.06 1.06L19.5 13.06l-1.72 1.72a.75.75 0 01-1.06-1.06L18.44 12l-1.72-1.72a.75.75 0 011.06-1.06l1.72 1.72 1.72-1.72a.75.75 0 011.06 0z"
+          clip-rule="evenodd" />
+      </svg>
+      <!-- Unmuted icon (hidden until user unmutes) -->
+      <svg id="icon-sound" viewBox="0 0 24 24" style="display:none">
+        <path
+          d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 001.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06zM18.584 5.106a.75.75 0 011.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 11-1.06-1.06 8.25 8.25 0 000-11.668.75.75 0 010-1.06z" />
+        <path
+          d="M15.932 7.757a.75.75 0 011.061 0 6 6 0 010 8.486.75.75 0 01-1.06-1.061 4.5 4.5 0 000-6.364.75.75 0 010-1.061z" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div id="main-content">
+    <div class="hero-card" id="hero-card">
+      <div class="card-header">
+        <div class="card-label">BayMax AI</div>
+        <div class="card-title">Your personal<br>healthcare<br>companion.</div>
+        <div class="card-subtitle">AI-powered health tools, built for you.</div>
+      </div>
+      <div class="module-list">
+        <div class="module-row" onclick="openModule('Talk to Me')">
+          <div class="module-row-left">
+            <div class="module-row-name">Talk to Me</div>
+            <div class="module-row-desc">Health Q&amp;A powered by RAG</div>
+          </div>
+          <span class="module-row-arrow">&#8250;</span>
+        </div>
+        <div class="module-row" onclick="openModule('Scan Me')">
+          <div class="module-row-left">
+            <div class="module-row-name">Scan Me</div>
+            <div class="module-row-desc">Skin &amp; nutrition image analysis</div>
+          </div>
+          <span class="module-row-arrow">&#8250;</span>
+        </div>
+        <div class="module-row" onclick="openModule('Track Me')">
+          <div class="module-row-left">
+            <div class="module-row-name">Track Me</div>
+            <div class="module-row-desc">Health trends &amp; anomaly detection</div>
+          </div>
+          <span class="module-row-arrow">&#8250;</span>
+        </div>
+        <div class="module-row" onclick="openModule('Check Me')">
+          <div class="module-row-left">
+            <div class="module-row-name">Check Me</div>
+            <div class="module-row-desc">Wellness &amp; mental health assessments</div>
+          </div>
+          <span class="module-row-arrow">&#8250;</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="card-footer-text">Not a substitute for professional medical advice</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULE PAGE -->
+  <div class="module-page" id="module-page">
+    <div class="mp-header">
+      <button class="mp-back" onclick="closeModule()">&#8249; Back</button>
+      <div class="mp-title" id="mp-title"></div>
+    </div>
+    <div class="mp-body">
+      <div>
+        <div class="mp-soon">Coming Soon</div>
+        <div class="mp-desc">This module is under development. Connect the backend to bring it to life.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var video = document.getElementById('intro-video');
+    var videoLayer = document.getElementById('video-layer');
+    var mainContent = document.getElementById('main-content');
+    var heroCard = document.getElementById('hero-card');
+    var muteBtn = document.getElementById('mute-btn');
+    var iconMuted = document.getElementById('icon-muted');
+    var iconSound = document.getElementById('icon-sound');
+    var transitioned = false;
+
+    // Toggle mute on button click
+    muteBtn.addEventListener('click', function () {
+      video.muted = !video.muted;
+      iconMuted.style.display = video.muted ? 'block' : 'none';
+      iconSound.style.display = video.muted ? 'none' : 'block';
+    });
+
+    // Transition to main content at ~10.3s or when video ends
+    video.addEventListener('timeupdate', function () {
+      if (video.currentTime >= 10.3 && !transitioned) {
+        transitioned = true;
+        showMain();
+      }
+    });
+    video.addEventListener('ended', function () {
+      if (!transitioned) { transitioned = true; showMain(); }
+    });
+
+    // If video file is missing, skip straight to main
+    video.addEventListener('error', function () {
+      if (!transitioned) { transitioned = true; showMain(); }
+    });
+    var src = video.querySelector('source');
+    if (src) {
+      src.addEventListener('error', function () {
+        if (!transitioned) { transitioned = true; showMain(); }
+      });
+    }
+
+    function showMain() {
+      muteBtn.style.display = 'none';
+      videoLayer.classList.add('fade-out');
+      setTimeout(function () {
+        mainContent.classList.add('visible');
+        setTimeout(function () { heroCard.classList.add('animate-in'); }, 100);
+        var rows = document.querySelectorAll('.module-row');
+        rows.forEach(function (row, i) {
+          setTimeout(function () { row.classList.add('visible'); }, 700 + i * 100);
+        });
+      }, 300);
+    }
+
+    function openModule(name) {
+      document.getElementById('mp-title').textContent = name;
+      document.getElementById('module-page').classList.add('open');
+    }
+    function closeModule() {
+      document.getElementById('module-page').classList.remove('open');
+    }
+  </script>
+</body>
+
+</html>
