@@ -12,6 +12,9 @@ backend/ml/models/*.pt
 backend/ml/models/*.pth
 backend/ml/models/*.onnx
 chroma_data/
+chroma_db/
+backend/chroma_data/
+backend/chroma_db/
 
 # IDE
 .vscode/
@@ -32,3 +35,9 @@ Thumbs.db
 
 # Docker
 *.log
+
+# Large media (keep in repo root, ignore copies)
+frontend/public/intro.mp4
+
+# Gemini
+.gemini/

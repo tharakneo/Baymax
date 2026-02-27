@@ -9,8 +9,8 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 const api = axios.create({ baseURL: API_BASE });
 
 // ── Talk to Me ──
-export async function sendChatMessage(message, sessionId = null) {
-    const { data } = await api.post('/chat/', { message, session_id: sessionId });
+export async function sendChatMessage(message, conversationId = null) {
+    const { data } = await api.post('/chat/message', { message, conversation_id: conversationId });
     return data;
 }
 

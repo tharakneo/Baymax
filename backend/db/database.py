@@ -1,24 +1,26 @@
-"""Database connection and session management."""
-
 from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from config import get_settings
 
-from config import settings
-from db.models import Base
+settings = get_settings()
 
-engine = create_engine(settings.database_url, echo=settings.debug)
+engine = create_engine(settings.database_url)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-
-def init_db():
-    """Create all database tables."""
-    Base.metadata.create_all(bind=engine)
+Base = declarative_base()
 
 
 def get_db():
-    """Dependency that provides a database session."""
+    """Dependency for FastAPI routes — yields a DB session and closes it after."""
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
+
+
+def create_tables():
+    """Create all tables on startup if they don't exist."""
+    Base.metadata.create_all(bind=engine)

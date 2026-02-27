@@ -1,71 +1,56 @@
-"""SQLAlchemy database models."""
-
-from sqlalchemy import Column, Integer, String, Float, DateTime, Text, ForeignKey
-from sqlalchemy.orm import relationship, declarative_base
-from datetime import datetime
-
-Base = declarative_base()
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Float
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
+from db.database import Base
 
 
 class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String(50), unique=True, nullable=False)
-    email = Column(String(100), unique=True, nullable=False)
-    hashed_password = Column(String(255), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    email = Column(String, unique=True, index=True, nullable=False)
+    name = Column(String, nullable=False)
+    hashed_password = Column(String, nullable=False)
+    age = Column(Integer, nullable=True)
+    weight = Column(Float, nullable=True)   # kg
+    height = Column(Float, nullable=True)   # cm
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
 
-    chat_sessions = relationship("ChatSession", back_populates="user")
-    health_records = relationship("HealthRecord", back_populates="user")
-    assessments = relationship("Assessment", back_populates="user")
-
-
-class ChatSession(Base):
-    __tablename__ = "chat_sessions"
-
-    id = Column(Integer, primary_key=True, index=True)
-    session_id = Column(String(100), unique=True, nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-    user = relationship("User", back_populates="chat_sessions")
-    messages = relationship("ChatMessage", back_populates="session")
+    conversations = relationship("Conversation", back_populates="user")
+    health_logs = relationship("HealthLog", back_populates="user")
 
 
-class ChatMessage(Base):
-    __tablename__ = "chat_messages"
+class Conversation(Base):
+    __tablename__ = "conversations"
 
     id = Column(Integer, primary_key=True, index=True)
-    session_id = Column(Integer, ForeignKey("chat_sessions.id"))
-    role = Column(String(20), nullable=False)  # "user" or "assistant"
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    user = relationship("User", back_populates="conversations")
+    messages = relationship("Message", back_populates="conversation")
+
+
+class Message(Base):
+    __tablename__ = "messages"
+
+    id = Column(Integer, primary_key=True, index=True)
+    conversation_id = Column(Integer, ForeignKey("conversations.id"), nullable=False)
+    role = Column(String, nullable=False)       # "user" or "assistant"
     content = Column(Text, nullable=False)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
 
-    session = relationship("ChatSession", back_populates="messages")
-
-
-class HealthRecord(Base):
-    __tablename__ = "health_records"
-
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    metric = Column(String(50), nullable=False)
-    value = Column(Float, nullable=False)
-    unit = Column(String(20), nullable=False)
-    recorded_at = Column(DateTime, default=datetime.utcnow)
-
-    user = relationship("User", back_populates="health_records")
+    conversation = relationship("Conversation", back_populates="messages")
 
 
-class Assessment(Base):
-    __tablename__ = "assessments"
+class HealthLog(Base):
+    __tablename__ = "health_logs"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    assessment_type = Column(String(50), nullable=False)
-    score = Column(Float, nullable=False)
-    max_score = Column(Float, nullable=False)
-    completed_at = Column(DateTime, default=datetime.utcnow)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    log_type = Column(String, nullable=False)   # mood, sleep, water, symptom, etc.
+    value = Column(Float, nullable=True)
+    notes = Column(Text, nullable=True)
+    logged_at = Column(DateTime(timezone=True), server_default=func.now())
 
-    user = relationship("User", back_populates="assessments")
+    user = relationship("User", back_populates="health_logs")

@@ -1,28 +1,33 @@
-"""Application settings loaded from environment variables."""
-
 from pydantic_settings import BaseSettings
-from typing import List
+from functools import lru_cache
 
 
 class Settings(BaseSettings):
-    # Database
-    database_url: str = "postgresql://baymax:baymax_secret@db:5432/baymax_db"
+    # Groq
+    groq_api_key: str
+    groq_model: str = "llama-3.1-8b-instant"
+    embedding_model: str = "all-MiniLM-L6-v2"
 
-    # LLM
-    openai_api_key: str = ""
-    llm_model: str = "gpt-4o"
+    # Database — uses @localhost for local dev, @db for Docker
+    database_url: str = "postgresql://baymax:baymax_secret@localhost:5432/baymax_db"
+    postgres_user: str = "baymax"
+    postgres_password: str = "baymax_secret"
+    postgres_db: str = "baymax_db"
 
-    # ChromaDB
+    # ChromaDB — matches .env value
     chroma_persist_dir: str = "./chroma_data"
 
     # App
-    secret_key: str = "change-me-in-production"
+    app_env: str = "development"
+    secret_key: str = "change_this_in_production"
     debug: bool = True
-    cors_origins: List[str] = ["http://localhost:5173"]
+    cors_origins: str = "http://localhost:5173"
 
     class Config:
         env_file = ".env"
-        env_file_encoding = "utf-8"
+        extra = "ignore"
 
 
-settings = Settings()
+@lru_cache()
+def get_settings() -> Settings:
+    return Settings()

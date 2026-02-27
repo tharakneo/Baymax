@@ -1,36 +1,52 @@
-"""BayMax AI — FastAPI Application Entry Point."""
+import os
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
+from db.database import create_tables
+from api.routes.chat import router as chat_router
 
-from config import settings
-from api.routes import chat, scan, track, check
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Runs on startup and shutdown."""
+    print("🤖 BayMax is booting up...")
+    create_tables()
+    print("✅ Database tables ready")
+    print("✅ BayMax is online. I am your personal healthcare companion.")
+    yield
+    print("🔴 BayMax is shutting down.")
+
 
 app = FastAPI(
     title="BayMax AI",
-    description="Your personal AI-powered healthcare companion",
-    version="0.1.0",
+    description="Your personal healthcare companion API",
+    version="1.0.0",
+    lifespan=lifespan,
 )
 
-# CORS
+# ─── CORS ────────────────────────────────────────────────────────────────────
+# Allows your React frontend (localhost:5173) to talk to this backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
+    allow_origins=["http://localhost:5173", "http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Routes
-app.include_router(chat.router, prefix="/api/chat", tags=["Talk to Me"])
-app.include_router(scan.router, prefix="/api/scan", tags=["Scan Me"])
-app.include_router(track.router, prefix="/api/track", tags=["Track Me"])
-app.include_router(check.router, prefix="/api/check", tags=["Check Me"])
+# ─── Routers ─────────────────────────────────────────────────────────────────
+app.include_router(chat_router)
 
 
 @app.get("/")
 async def root():
-    return {"message": "Hello, I am BayMax — your personal healthcare companion."}
+    return {
+        "message": "Hello. I am BayMax, your personal healthcare companion.",
+        "status": "online",
+        "docs": "/docs",
+    }
 
 
 @app.get("/health")
