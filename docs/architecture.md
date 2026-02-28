@@ -29,9 +29,9 @@ BayMax AI is a modular healthcare companion with four core modules, a shared bac
 ## Module Details
 
 ### Talk to Me — RAG Pipeline
-- **Embeddings:** OpenAI text-embedding-ada-002
+- **Embeddings:** HuggingFace all-MiniLM-L6-v2
 - **Vector Store:** ChromaDB (persisted to disk)
-- **LLM:** GPT-4o via LangChain RetrievalQA
+- **LLM:** Groq/Llama 3.1 via LangChain
 - **Persona:** BayMax-style system prompt
 
 ### Scan Me — Computer Vision
@@ -48,7 +48,7 @@ BayMax AI is a modular healthcare companion with four core modules, a shared bac
 ### Check Me — Assessments
 - **Format:** Likert-scale questionnaires
 - **Types:** Wellness, stress, sleep, mood
-- **Scoring:** Sum-based with AI-generated recommendations
+- **Scoring:** Sum-based with recommendations
 
 ## Data Flow
 

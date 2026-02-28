@@ -25,28 +25,53 @@ export async function uploadScanImage(file, scanType = 'skin') {
 }
 
 // ── Track Me ──
-export async function logHealthData(payload) {
-    const { data } = await api.post('/track/log', payload);
+export async function logHealthEntry(logType, value, notes = null, dateStr = null) {
+    const { data } = await api.post('/track/log', { log_type: logType, value, notes, date_str: dateStr });
     return data;
 }
 
-export async function getHealthSummary() {
-    const { data } = await api.get('/track/summary');
+export async function getTrackLogs(logType, days = 7) {
+    const { data } = await api.get(`/track/logs/${logType}?days=${days}`);
     return data;
 }
 
-export async function getTrends(metric) {
-    const { data } = await api.get(`/track/trends/${metric}`);
+export async function getTodaySummary(date = null) {
+    const tz = new Date().getTimezoneOffset();
+    const params = [`tz_offset=${tz}`];
+    if (date) params.push(`date=${date}`);
+    const { data } = await api.get(`/track/summary?${params.join('&')}`);
     return data;
 }
 
-// ── Check Me ──
-export async function getAssessmentQuestions(type) {
-    const { data } = await api.get(`/check/questions/${type}`);
+export async function getHealthCard() {
+    const { data } = await api.get('/track/health-card');
     return data;
 }
 
-export async function submitAssessment(payload) {
-    const { data } = await api.post('/check/submit', payload);
+export async function updateHealthCard(card) {
+    const { data } = await api.put('/track/health-card', card);
+    return data;
+}
+
+export async function analyzeFood(mealType, description, dateStr = null) {
+    const { data } = await api.post('/track/food/analyze', { meal_type: mealType, description, date_str: dateStr });
+    return data;
+}
+
+export async function getTodaysFood(date = null) {
+    const q = date ? `?date=${date}` : '';
+    const { data } = await api.get(`/track/food/today${q}`);
+    return data;
+}
+
+export async function deleteHealthLog(logId) {
+    const { data } = await api.delete(`/track/logs/${logId}`);
+    return data;
+}
+
+// ── Insights ──
+export async function getWeeklyInsights() {
+    const tz = new Date().getTimezoneOffset();
+    const { data } = await api.get(`/insights/weekly?tz_offset=${tz}`);
     return data;
 }

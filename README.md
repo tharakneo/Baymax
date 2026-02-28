@@ -1,27 +1,28 @@
 # 🏥 BayMax AI
 
-Your personal AI-powered healthcare companion — inspired by the beloved Disney character.
+Your personal AI powered healthcare companion - inspired by the beloved Disney character.
 
 ## ✅ Module 1: Talk to Me
 
-The first module is live — a conversational health Q&A chatbot powered by **RAG** (Retrieval-Augmented Generation).
+A conversational health Q&A chatbot powered by **RAG** (Retrieval-Augmented Generation).
 
 ### Features
-- **ChatGPT-style interface** — clean Apple aesthetic with Outfit font, centered greeting, pill input bar
+- **Context Engine** — automatically pulls historical health logs and inserts them into chat prompts contextually to personalize Baymax's answers.
+- **RAG pipeline** — ChromaDB vector store + HuggingFace embeddings + Groq/Llama 3.1 LLM
+- **Conversation memory** — multi-turn context via PostgreSQL or in-memory fallback
+- **Chat interface** — clean aesthetic with Outfit font, centered greeting, pill input bar
 - **Word-by-word streaming** — responses appear with a typewriter effect and blinking cursor
 - **Interactive pain scale** — when Baymax asks "rate your pain," a 1–10 visual scale appears inline (green → red)
-- **Conversation memory** — multi-turn context via PostgreSQL or in-memory fallback
-- **RAG pipeline** — ChromaDB vector store + HuggingFace embeddings + Groq/Llama 3.1 LLM
-- **Intro video** — full-screen autoplay with Apple-style mute toggle, transitions to the main UI
+- **Intro video** — full-screen autoplay with mute toggle, transitions to the main UI
 
-### Upcoming Modules
+## 📱 Additional Modules (Live)
 
 | Module | Description | Status |
 |--------|-------------|--------|
-| **Talk to Me** | Health Q&A powered by RAG | ✅ Live |
-| **Scan Me** | Skin condition & nutrition image analysis | 🔜 Coming Soon |
-| **Track Me** | Health trends & anomaly detection | 🔜 Coming Soon |
-| **Check Me** | Wellness & mental health assessments | 🔜 Coming Soon |
+| **Talk to Me** | Health Q&A powered by RAG and Context Injection | ✅ Live |
+| **Scan Me** | Computer vision image analysis for skin and nutrition | ✅ Live |
+| **Track Me** | Complete health logging dashboard for water, sleep, calories, and steps | ✅ Live |
+| **Check Me** | Wellness and mental health assessments with weekly proactive insights | ✅ Live |
 
 ## Tech Stack
 
@@ -102,4 +103,3 @@ BayMax/
 
 ## License
 
-MIT

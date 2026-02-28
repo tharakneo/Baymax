@@ -14,6 +14,8 @@ class User(Base):
     age = Column(Integer, nullable=True)
     weight = Column(Float, nullable=True)   # kg
     height = Column(Float, nullable=True)   # cm
+    gender = Column(String, nullable=True)  # male, female, other
+    calorie_goal = Column(Integer, nullable=True)  # daily calorie goal
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     conversations = relationship("Conversation", back_populates="user")

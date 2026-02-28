@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { sendChatMessage } from '../utils/api';
 import PainScale from './PainScale';
 
-/* ── Typewriter — reveals text word-by-word like ChatGPT / Claude ────────── */
+/* ── Typewriter — reveals text word-by-word ────────── */
 function useTypewriter(text, speed = 28) {
     const [displayed, setDisplayed] = useState('');
     const [done, setDone] = useState(false);

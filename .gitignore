@@ -15,6 +15,8 @@ chroma_data/
 chroma_db/
 backend/chroma_data/
 backend/chroma_db/
+*.db
+*.sqlite3
 
 # IDE
 .vscode/

@@ -6,6 +6,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from db.database import create_tables
 from api.routes.chat import router as chat_router
+from api.routes.scan import router as scan_router
+from api.routes.track import router as track_router
+from api.routes.insights import router as insights_router
 
 
 @asynccontextmanager
@@ -27,7 +30,6 @@ app = FastAPI(
 )
 
 # ─── CORS ────────────────────────────────────────────────────────────────────
-# Allows your React frontend (localhost:5173) to talk to this backend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://localhost:3000"],
@@ -38,6 +40,9 @@ app.add_middleware(
 
 # ─── Routers ─────────────────────────────────────────────────────────────────
 app.include_router(chat_router)
+app.include_router(scan_router, prefix="/api/scan")
+app.include_router(track_router, prefix="/api/track", tags=["track"])
+app.include_router(insights_router, prefix="/api/insights", tags=["insights"])
 
 
 @app.get("/")
