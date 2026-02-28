@@ -15,14 +15,14 @@ A conversational health Q&A chatbot powered by **RAG** (Retrieval-Augmented Gene
 - **Interactive pain scale** — when Baymax asks "rate your pain," a 1–10 visual scale appears inline (green → red)
 - **Intro video** — full-screen autoplay with mute toggle, transitions to the main UI
 
-## 📱 Additional Modules (Live)
+## 📱 Modules
 
 | Module | Description | Status |
 |--------|-------------|--------|
 | **Talk to Me** | Health Q&A powered by RAG and Context Injection | ✅ Live |
 | **Scan Me** | Computer vision image analysis for skin and nutrition | ✅ Live |
 | **Track Me** | Complete health logging dashboard for water, sleep, calories, and steps | ✅ Live |
-| **Check Me** | Wellness and mental health assessments with weekly proactive insights | ✅ Live |
+| **Check Me** | Wellness and mental health assessments with weekly proactive insights | 🔜 Coming Soon |
 
 ## Tech Stack
 
