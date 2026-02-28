@@ -2,27 +2,28 @@
 
 Your personal AI powered healthcare companion - inspired by the beloved Disney character.
 
-## ✅ Module 1: Talk to Me
+A comprehensive, AI-powered healthcare companion built with FastAPI, React, and LangChain. 
 
-A conversational health Q&A chatbot powered by **RAG** (Retrieval-Augmented Generation).
+Baymax is designed to be your all-in-one personal health assistant, offering three core integrated modules:
 
-### Features
-- **Context Engine** — automatically pulls historical health logs and inserts them into chat prompts contextually to personalize Baymax's answers.
-- **RAG pipeline** — ChromaDB vector store + HuggingFace embeddings + Groq/Llama 3.1 LLM
-- **Conversation memory** — multi-turn context via PostgreSQL or in-memory fallback
-- **Chat interface** — clean aesthetic with Outfit font, centered greeting, pill input bar
-- **Word-by-word streaming** — responses appear with a typewriter effect and blinking cursor
-- **Interactive pain scale** — when Baymax asks "rate your pain," a 1–10 visual scale appears inline (green → red)
-- **Intro video** — full-screen autoplay with mute toggle, transitions to the main UI
+## 📱 Core Modules
 
-## 📱 Modules
+### 💬 1. Talk to Me (Context-Aware AI Chatbot)
+A conversational health Q&A chatbot powered by **RAG** (Retrieval-Augmented Generation) and Llama 3.1.
+- **Context Engine** — Baymax actively analyzes your messages for symptoms and automatically fetches your historical logs to generate deeply personalized advice.
+- **Strict RAG Constraints** — Designed with strict medical guardrails that prioritize your actual logged health data over generic medical web results.
+- **Interactive UI** — Features an interactive 1-10 pain scale and word-by-word streaming for a natural chat experience.
 
-| Module | Description | Status |
-|--------|-------------|--------|
-| **Talk to Me** | Health Q&A powered by RAG and Context Injection | ✅ Live |
-| **Scan Me** | Computer vision image analysis for skin and nutrition | ✅ Live |
-| **Track Me** | Complete health logging dashboard for water, sleep, calories, and steps | ✅ Live |
-| **Check Me** | Wellness and mental health assessments with weekly proactive insights | 🔜 Coming Soon |
+### 📊 2. Track Me (Health logging & Weekly Insights)
+A beautiful, glass-morphism dashboard to monitor your daily health metrics.
+- **Daily Logging** — Track your Water intake, Sleep hours, Calorie consumption, and Steps.
+- **Weekly Insights Engine** — An autonomous job that analyzes your rolling 7-day health data to give you personalized, proactive insights (e.g., warning you about dehydration trends before you feel sick).
+- **Apple Watch Sync** — (Mocked) interface for automatic step tracking sync.
+
+### 📷 3. Scan Me (Computer Vision Analysis)
+An integrated PyTorch-based image analysis pipeline.
+- **Skin Analysis** — Upload photos of rashes, moles, or lesions and receive an AI-powered assessment of potential dermatological conditions.
+- **Nutrition Analysis** — (In progress) Upload meal photos to automatically estimate caloric content and nutritional breakdowns.
 
 ## Tech Stack
 
