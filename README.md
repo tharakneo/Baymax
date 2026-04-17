@@ -73,10 +73,6 @@ npm install
 npm run dev
 ```
 
-### 6. Open the app
-- **Frontend →** [http://localhost:5173](http://localhost:5173)
-- **API docs →** [http://localhost:8000/docs](http://localhost:8000/docs)
-
 ## Project Structure
 
 ```
